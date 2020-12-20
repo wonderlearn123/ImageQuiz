@@ -11,28 +11,43 @@ let score = 0
 let questionCounter = 0
 let availableQuestions = []
 
-let questions =[
-    {
-        "question": "What is green?",
-        "qSound":"Sources/QuestionAudio/q1.mp3",
-        "choice1": "Sources/q1/1.png",
-        "choice2": "Sources/q1/2.png",
-        "choice3": "Sources/q1/3.png",
-        "answer": 2
-    },
-    {
-        "question":
-            "What is yellow?",
-            "qSound":"Sources/QuestionAudio/q2.mp3",
-        "choice1": "Sources/q2/1.png",
-        "choice2": "Sources/q2/2.png",
-        "choice3": "Sources/q2/3.png",
-        "answer": 1
-    }
-]
-
 const SCORE_POINTS = 100
-const MAX_QUESTIONS = questions.length
+var MAX_QUESTIONS = 0
+var questions =[]
+
+function loadTxt(){
+    fetch('Sources/Questions/Questions.txt')
+    .then(function(response){
+	return response.text();
+})
+.then (function(data){
+   var quesTxt=data.split('\n')
+
+quesTxt.forEach(function (item, index) {
+
+    if (item.length != 0){
+        item=item.trim();
+        index=index+1
+        let temp = {
+            "question": item.substring(0, item.length - 1),
+            "qSound":"Sources/Questions/q"+index+"/aud.mp3",
+            "choice1": "Sources/Questions/q"+index+"/1.png",
+            "choice2": "Sources/Questions/q"+index+"/2.png",
+            "choice3": "Sources/Questions/q"+index+"/3.png",
+            "answer":  parseInt(item.substr(item.length - 1))
+        }
+        questions.push(temp);
+    }
+  });
+  MAX_QUESTIONS = questions.length
+ console.log (MAX_QUESTIONS)
+  startGame()
+})
+}
+loadTxt()
+
+
+
 
 startGame = () => {
     questionCounter = 0
@@ -102,4 +117,3 @@ incrementScore = num => {
     scoreText.innerText = score
 }
 
-startGame()
